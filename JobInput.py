@@ -15,7 +15,7 @@ Title: {title}
 """
 
 def getJD():
-    return jobDesc.format(company=company,title=Title, description=description)
+    return jobDesc.format(company=Company,title=Title, description=description)
 
 def getRole():
-    return "{} at {}".format(Title, company)
+    return "{} at {}".format(Title, Company)
