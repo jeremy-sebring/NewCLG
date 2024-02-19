@@ -1,14 +1,16 @@
-from JobInput import getJD, getRole
+from JobInput import getJD, getRole, Additional_Questions
 
+from dotenv import load_dotenv, find_dotenv
 from PyPDF2 import PdfReader
 from pathlib import Path
 import openai
 import shutil
+import os
 
+load_dotenv(find_dotenv())
 
-inputResume = Path("inputs/JSebringEng23.pdf")
-openai.api_key = ""
-  
+inputResume = Path("inputs/Jeremy Sebring Resume.pdf")
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 pdfText = ""
 
@@ -25,40 +27,59 @@ for page in pdfReader.pages:
 
 jobDescription = '''
 
-'''    
+'''
 
 prompt = """
 
-Hi name is Jeremy Sebring!
+Hi my name is Jeremy Sebring!
 
-This is my resume extracted from a PDF: 
+This is my resume extracted from a PDF:
 
 {resume}
 
 
-I'd like a cover letter for this job:
+I'd like a introduction for this job talking about why I want to work there and why I'd be a good fit:
 
 {job}
 
-Can you generate one for me? 
-
-
+Can you generate one for me?
 
 """
+
+
 
 formatted_prompt = prompt.format(resume=pdfText, job=getJD())
 
 
-messages = [ {"role": "system", "content": 
-              "You are a intelligent career assistant."}, 
-            {"role": "user", "content": formatted_prompt } ]
+messages = [ {"role": "system", "content":
+              "You are a intelligent career assistant."},
+            {"role": "user", "content": formatted_prompt }, 
+              ]
+
+PromptTwo =  '''
+Additionally they have asked these questions:
+
+{questions}
+
+Can you answer each of them seperately in 300-500 words?
+'''
+
+if Additional_Questions and Additional_Questions[0] != "":
+    qText = ""
+    for item in Additional_Questions: 
+        qText = qText + item + "\n"
+    
+    PromptTwo = PromptTwo.format(questions=qText)
+    messages.append({"role": "user", "content": PromptTwo})
+
 
 
 chat = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=messages
+            model="gpt-4", messages=messages
         )
 
 reply = chat.choices[0].message.content
+
 
 
 

@@ -4,7 +4,14 @@ Title = ""
 
 #Not Needed if not using ChatGPT
 description = """
+
 """
+
+
+
+Additional_Questions = [
+    ""
+]
 
 
 jobDesc = """
